@@ -1,11 +1,11 @@
 # API NLP - Servicio de análisis de sentimientos
-Ejemplo de API alojada en Heroky, proyecto Data&Analytics Feb 2020 bootcamp FT.
+Proyecto de Data Analytics, Feb 2020 bootcamp FT.
 
 # Overview
-La API se encuentra alojada en Heroku, y sirve datos extraidos de la base de datos de MongoDB Atlas y procesados a través de la nltk de NLP.
+La API se encuentra alojada en Heroku, y sirve datos extraidos de la base de datos de MongoDB Atlas y procesados a través de la librería nltk de NLP.
 
 # Documentación
-Ofrece un servicio de análisis de series, pudiendo extraer el sentimiento (por capítulos) de cualquier tipo de producto audiovisual, con el objetivo de recomendar las series en base a su similaridad entre el usuario y el contenido analizádo.
+Servicio de análisis de series, pudiendo extraer el sentimiento (por capítulos) de cualquier tipo de producto audiovisual, con el objetivo de recomendar las series en base a su similaridad entre el usuario y el contenido analizado.
 
 - Index: @get("/help")
 - User endpoints:

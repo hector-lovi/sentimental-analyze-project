@@ -1,12 +1,20 @@
 from pymongo import MongoClient
-import jsonErrorHandler
+from jsonErrorHandler import jsonErrorHandler
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics.pairwise import cosine_similarity as distance
+import numpy as np
+import pandas as pd
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
-class mongoFunc():
+class mObject():
     def __init__(self):
         self.myclient = MongoClient(
-            "mongodb://localhost:27017/sentimental-analyze")
+            os.getenv("mdb_url"))
         self.mydb = self.myclient.get_database()
         self.col_users = self.mydb['users']
         self.col_chats = self.mydb['chats']
@@ -54,7 +62,7 @@ class mongoFunc():
             'name': name_chat
         }
         self.col_chats.insert_one(new_chat)
-        return self.chat_id
+        return (self.chat_id()) - 1
 
     @jsonErrorHandler
     def adduser_chat(self, chat_id, adduser):
@@ -109,3 +117,26 @@ class mongoFunc():
         s = SentimentIntensityAnalyzer()
         result = s.polarity_scores(t)
         return result
+
+    @jsonErrorHandler
+    def recommender(self, docs):
+        c_id = self.col_chats.distinct('_id')
+        for _id in c_id:
+            all_text = ''
+            for extract in self.alltext_chat(_id)['content']:
+                text = ' '.join([extract['text']])
+                all_text += text
+
+            docs = {_id: all_text}
+
+        count_vectorizer = CountVectorizer()
+        sparse_matrix = count_vectorizer.fit_transform(docs.values())
+        doc_term_matrix = sparse_matrix.todense()
+        df = pd.DataFrame(doc_term_matrix,
+                          columns=count_vectorizer.get_feature_names(),
+                          index=docs.keys())
+        similarity_matrix = distance(df, df)
+        sim_df = pd.DataFrame(
+            similarity_matrix, columns=docs.keys(), index=docs.keys())
+        np.fill_diagonal(sim_df.values, 0)
+        return sim_df.idxmax().head(3)

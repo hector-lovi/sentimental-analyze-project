@@ -16,7 +16,7 @@ class mObject():
             os.getenv("mdb_url"))
         self.mydb = self.myclient.get_database()
         self.col_users = self.mydb['users']
-        self.col_chats = self.mydb['chats']
+        self.col_episodes = self.mydb['episodes']
 
     def user_id(self):
         '''
@@ -54,37 +54,37 @@ class mObject():
         else:
             raise NameError(f'El nombre {username} ya se encuentra registrado')
 
-    def chat_id(self):
+    def episode_id(self):
         '''
-        Revisa si el id del chat existe o no.
-        Crea un id chat único.
+        Revisa si el id del episode existe o no.
+        Crea un id episode único.
         '''
-        ch_id = self.col_chats.distinct('_id')
-        if ch_id == []:
+        ep_id = self.col_episodes.distinct('_id')
+        if ep_id == []:
             return 1000
         else:
-            return max(ch_id) + 1
+            return max(ep_id) + 1
 
-    def createChat(self, name_chat):
+    def createepisode(self, name_episode):
         '''
-        Añade un chat a la colección chats.
+        Añade un episode a la colección episodes.
         '''
-        new_chat = {
-            '_id': self.chat_id(),
-            'name': name_chat
+        new_episode = {
+            '_id': self.episode_id(),
+            'name': name_episode
         }
-        self.col_chats.insert_one(new_chat)
-        return (self.chat_id()) - 1
+        self.col_episodes.insert_one(new_episode)
+        return (self.episode_id()) - 1
 
-    def adduser_chat(self, chat_id, adduser):
+    def adduser_episode(self, episode_id, adduser):
         '''
         Comprueba previamente si el usuario existe en la colección users.
-        Añade usuarios a un chat concreto.
+        Añade usuarios a un episode concreto.
         '''
-        # Lista de chats id únicos
-        ch_id = self.col_chats.distinct('_id')
-        if int(chat_id) not in ch_id:
-            raise ValueError(f'El chat con id {chat_id} no existe')
+        # Lista de episodes id únicos
+        ep_id = self.col_episodes.distinct('_id')
+        if int(episode_id) not in ep_id:
+            raise ValueError(f'El episode con id {episode_id} no existe')
 
         # Lista de users name únicos
         us_name = self.col_users.distinct('name')
@@ -96,52 +96,52 @@ class mObject():
             {'name': adduser}, {'name': 0}))
         id_n = [v for d in id_adduser for k, v in d.items()][0]
 
-        self.col_chats.update({'_id': int(chat_id)}, {
+        self.col_episodes.update({'_id': int(episode_id)}, {
             '$push': {'users': int(id_n)}})
-        return chat_id
+        return episode_id
 
-    def addtext_chat(self, chat_id, user, message):
+    def addtext_episode(self, episode_id, user, message):
         '''
-        Comprueba previamente si el chat existe en la colección chats.
-        Añade texto a un chat concreto.
+        Comprueba previamente si el episode existe en la colección episodes.
+        Añade texto a un episode concreto.
         '''
-        # Lista de chats id únicos
-        ch_id = self.col_chats.distinct('_id')
-        if int(chat_id) not in ch_id:
-            raise ValueError(f'El chat con id {chat_id} no existe')
+        # Lista de episodes id únicos
+        ep_id = self.col_episodes.distinct('_id')
+        if int(episode_id) not in ep_id:
+            raise ValueError(f'El episode con id {episode_id} no existe')
 
         # Lista de users name únicos
         us_name = self.col_users.distinct('name')
         if user not in us_name:
             raise NameError(f'El usuario{user} no existe')
 
-        # Lista de usuarios participantes únicos de un chat concreto
-        ch_us = set(self.col_chats.find({'_id': int(chat_id)}, {
+        # Lista de usuarios participantes únicos de un episode concreto
+        ep_us = set(self.col_episodes.find({'_id': int(episode_id)}, {
             '_id': 0, 'users': 1}))
         id_us = list(self.col_users.find({'name': user}, {
             'name': 0}))
         id_users = [v for d in id_us for k, v in d.items()][0]
-        if id_users not in ch_us:
-            raise NameError(f'El usuario {user} no se encuentra en el chat')
+        if id_users not in ep_us:
+            raise NameError(f'El usuario {user} no se encuentra en el episode')
 
-        self.col_chats.update({'_id': int(chat_id)}, {
+        self.col_episodes.update({'_id': int(episode_id)}, {
             '$push': {'content': {'user': int(id_us), 'text': str(message)}}})
-        return f'Mensaje añadido al chat {chat_id} con éxito'
+        return f'Mensaje añadido al episode {episode_id} con éxito'
 
-    def alltext_chat(self, chat_id):
+    def alltext_episode(self, episode_id):
         '''
-        Muestra todos los mensajes de un chat específico.
+        Muestra todos los mensajes de un episode específico.
         '''
-        messages = list(self.col_chats.find({'_id': int(chat_id)}, {
+        messages = list(self.col_episodes.find({'_id': int(episode_id)}, {
             '_id': 0, 'content': 1}))
         text = messages[0]
         return text
 
-    def analyze_chat(self, chat_id):
+    def analyze_episode(self, episode_id):
         '''
-        Realiza un análisis de sentimiento de un chat específico.
+        Realiza un análisis de sentimiento de un episode específico.
         '''
-        text = self.alltext_chat(chat_id)['content']
+        text = self.alltext_episode(episode_id)['content']
         t = ' '.join([d['text'] for d in text])
         s = SentimentIntensityAnalyzer()
         result = s.polarity_scores(t)
@@ -151,11 +151,11 @@ class mObject():
         '''
         Recomendador de episodios en función de los parámetros descritos por el usuario.
         '''
-        # Lista de todos los id chats de la colección chats
-        c_id = self.col_chats.distinct('_id')
+        # Lista de todos los id episodes de la colección episodes
+        c_id = self.col_episodes.distinct('_id')
         for _id in c_id:
             all_text = ''
-            for extract in self.alltext_chat(_id)['content']:
+            for extract in self.alltext_episode(_id)['content']:
                 text = ' '.join([extract['text']])
                 all_text += text
 

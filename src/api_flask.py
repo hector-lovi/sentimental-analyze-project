@@ -12,7 +12,7 @@ app = Flask(__name__)
 @jsonErrorHandler
 @app.route('/help')
 def start():
-    return 'Bienvenid@!! Si tienes dudas de como usar esta API consulta el archivo README.md'
+    return '¡¡Bienvenid@!! Para cualquier duda lee las instrucciones en el archivo README.md :)'
 
 
 @jsonErrorHandler
@@ -23,46 +23,46 @@ def addUser(username):
 
 
 @jsonErrorHandler
-@app.route('/chat/create')
-def create_chat():
-    name_chat = request.args.get(key='name')
-    query = m.createChat(name_chat)
-    return f'El chat {name_chat} con id {query} ha sido creado con éxito'
+@app.route('/episode/create')
+def create_episode():
+    name_episode = request.args.get(key='name')
+    query = m.createepisode(name_episode)
+    return f'El episode {name_episode} con id {query} ha sido creado con éxito'
 
 
 @jsonErrorHandler
-@app.route('/chat/<chat_id>/adduser')
-def user_to_chat(chat_id):
+@app.route('/episode/<episode_id>/adduser')
+def user_to_episode(episode_id):
     addUser = request.args.get(key='user')
-    query = m.adduser_chat(chat_id, addUser)
-    return f'El usuario {addUser} ha sido añadido al chat {query}'
+    query = m.adduser_episode(episode_id, addUser)
+    return f'El usuario {addUser} ha sido añadido al episode {query}'
 
 
 @jsonErrorHandler
-@app.route('/chat/<chat_id>/addmessage')
-def message_to_chat(chat_id):
+@app.route('/episode/<episode_id>/addmessage')
+def message_to_episode(episode_id):
     user = request.args.get(key='user')
     message = request.args.get(key='text')
-    query = m.addtext_chat(chat_id, user, message)
+    query = m.addtext_episode(episode_id, user, message)
     return query
 
 
 @jsonErrorHandler
-@app.route('/chat/<chat_id>/list')
-def all_message(chat_id):
-    query = m.alltext_chat(chat_id)
+@app.route('/episode/<episode_id>/list')
+def all_message(episode_id):
+    query = m.alltext_episode(episode_id)
     return query
 
 
 @jsonErrorHandler
-@app.route('/chat/<chat_id>/sentiment')
-def sentiment_chat(chat_id):
-    query = m.analyze_chat(chat_id)
+@app.route('/episode/<episode_id>/sentiment')
+def sentiment_episode(episode_id):
+    query = m.analyze_episode(episode_id)
     return query
 
 
 @jsonErrorHandler
-@app.route('/chat/recommend')
+@app.route('/episode/recommend')
 def reco():
     docs = request.args.get(key='description')
     query = m.recommender(docs)

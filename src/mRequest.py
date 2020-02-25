@@ -116,16 +116,17 @@ class mObject():
             raise NameError(f'El usuario{user} no existe')
 
         # Lista de usuarios participantes únicos de un episode concreto
-        ep_us = set(self.col_episodes.find({'_id': int(episode_id)}, {
+        ep_us = list(self.col_episodes.find({'_id': int(episode_id)}, {
             '_id': 0, 'users': 1}))
+        ep_us = set(ep_us[0]['users'])
         id_us = list(self.col_users.find({'name': user}, {
             'name': 0}))
-        id_users = [v for d in id_us for k, v in d.items()][0]
-        if id_users not in ep_us:
+        id_user = [v for d in id_us for k, v in d.items()][0]
+        if id_user not in ep_us:
             raise NameError(f'El usuario {user} no se encuentra en el episode')
 
         self.col_episodes.update({'_id': int(episode_id)}, {
-            '$push': {'content': {'user': int(id_us), 'text': str(message)}}})
+            '$push': {'content': {'user': int(id_user), 'text': str(message)}}})
         return f'Mensaje añadido al episode {episode_id} con éxito'
 
     def alltext_episode(self, episode_id):

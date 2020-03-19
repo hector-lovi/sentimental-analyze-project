@@ -1,8 +1,7 @@
-# API NLP - Servicio de análisis de sentimientos
-Proyecto de Data Analytics, Feb 2020 bootcamp FT.
+# Procesamiento natural del lenguaje enfocado hacia series de televisión
+Este repositorio tiene como objetivo la creación de un sistema de recomendación de series.  
 
-# Overview
-La API se encuentra alojada en Heroku, y sirve datos extraidos de la base de datos de MongoDB Atlas y procesados a través de la librería nltk de NLP.
+Mediante una API construida en Python con Flask el usuario podrá almacenar contenido audiovisual (mediante un estilo similar al de un guión), pudiendo consultar dicho contenido, analizar su positividad / negatividad e incluso generar una recomendación.
 
 # Documentación
 Servicio de análisis de series, pudiendo extraer el sentimiento (por capítulos) de cualquier tipo de producto audiovisual, con el objetivo de recomendar las series en base a su similaridad entre el usuario y el contenido analizado.

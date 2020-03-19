@@ -1,4 +1,4 @@
-# Procesamiento natural del lenguaje enfocado hacia series de televisión
+# Procesamiento natural del lenguaje focalizado en contenido audiovisual
 Este repositorio tiene como objetivo la creación de un sistema de recomendación de series.  
 
 Mediante una API construida en Python con Flask el usuario podrá almacenar contenido audiovisual (mediante un estilo similar al de un guión), pudiendo consultar dicho contenido, analizar su positividad / negatividad e incluso generar una recomendación.

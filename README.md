@@ -6,17 +6,13 @@ Mediante una API construida en Python con Flask el usuario podrá almacenar cont
 # Documentación  
 
 **Ayuda**  
-
 `@get("/help")`
 
 **Crear usuario partícipes en episodios**  
-
 `@post('/user/create')`  
 
 **Crear un episodio**  
-
 `@post('/episode/create')`
 
 **Sustraer el sentimiento de un capítulo concreto**  
-
 `@get("/episode/<episode_id>/get_sentiment")`

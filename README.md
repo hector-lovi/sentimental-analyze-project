@@ -22,5 +22,4 @@ El usuario deberá de generar una breve descripción, se analizará y se le devo
 `docs = {
     'description':'bitch, dildo, big black, aliens, Mr. Hat'
 }`  
-
 `@get('/episode/recommend', params=docs).text`

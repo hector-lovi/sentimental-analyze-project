@@ -19,9 +19,7 @@ Mediante una API construida en Python con Flask el usuario podrá almacenar cont
 
 **Recomendador de episodios**  
 El usuario deberá de generar una breve descripción, se analizará y se le devolverá una recomendación acorde con la descripción.  
-`
-docs = {
+`docs = {
     'description':'bitch, dildo, big black, aliens, Mr. Hat'
 }  
-
 @get('/episode/recommend', params=docs).text`
